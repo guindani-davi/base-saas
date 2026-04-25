@@ -1,0 +1,14 @@
+name: Format
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: 'backend/.nvmrc'
+      - run: cd backend && npm install
+      - run: cd backend && npm run format:check
