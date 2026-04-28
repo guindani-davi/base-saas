@@ -1,7 +1,7 @@
-import { CreateUserBody } from '@base-saas/shared';
+import { CreateBody } from '@base-saas/shared';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateUserBodyDTO implements CreateUserBody {
+export class CreateBodyDTO implements CreateBody {
   @IsNotEmpty()
   @IsEmail()
   public email: string;

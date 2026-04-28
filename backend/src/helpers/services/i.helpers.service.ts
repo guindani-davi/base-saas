@@ -8,9 +8,8 @@ export abstract class IHelpersService {
     createdAt: string,
     updatedAt: string | null,
   ): { createdAtDate: Date; updatedAtDate: Date | null };
-  public abstract parseDate(date: string): Date;
-  public abstract subtractOneDay(date: string): string;
-  public abstract getCurrentDate(): string;
+  public abstract getCurrentTimestampWithoutTZ(): string;
+  public abstract generateUUID(): string;
   public abstract isProduction(): boolean;
-  public abstract generateSlug(name: string): string;
+  public abstract removeTimestampTZ(date: Date): string;
 }

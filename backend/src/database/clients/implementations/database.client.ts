@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IDatabaseService } from '../i.database.service';
+import { IDatabaseClient } from '../i.database.client';
 
 @Injectable()
-export class DatabaseService extends IDatabaseService {
+export class DatabaseClient extends IDatabaseClient {
   public constructor(@Inject(ConfigService) configService: ConfigService) {
     super(
       configService.getOrThrow<string>('SUPABASE_URL'),

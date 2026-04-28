@@ -1,7 +1,7 @@
+import { SafeUser } from '@base-saas/shared';
 import type { JwtPayload } from '../../auth/models/jwt.model';
-import { CreateUserBodyDTO } from '../dtos/create-user.dto';
-import { UpdateUserBodyDTO } from '../dtos/update-user.dto';
-import { SafeUser } from '../models/safe-user.model';
+import { CreateBodyDTO } from '../dtos/create.dto';
+import { UpdateBodyDTO } from '../dtos/update.dto';
 import { IUsersService } from '../services/i.users.service';
 
 export abstract class IUsersController {
@@ -11,10 +11,10 @@ export abstract class IUsersController {
     this.userService = userService;
   }
 
-  public abstract createUser(body: CreateUserBodyDTO): Promise<SafeUser>;
+  public abstract createUser(body: CreateBodyDTO): Promise<SafeUser>;
   public abstract getMe(user: JwtPayload): Promise<SafeUser>;
   public abstract updateMe(
     user: JwtPayload,
-    body: UpdateUserBodyDTO,
+    body: UpdateBodyDTO,
   ): Promise<void>;
 }

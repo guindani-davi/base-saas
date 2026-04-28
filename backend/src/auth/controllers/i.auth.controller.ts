@@ -1,8 +1,6 @@
-import { AuthTokensResponseDto } from '../dtos/auth-tokens.dto';
-import { LoginBodyDto } from '../dtos/login.dto';
+import { LoginBodyDTO } from '../dtos/login.dto';
 import { RefreshBodyDTO } from '../dtos/refresh.dto';
-import { RequestPasswordResetBodyDTO } from '../dtos/request-password-reset.dto';
-import { ResetPasswordBodyDTO } from '../dtos/reset-password.dto';
+import { TokensResponseDTO } from '../dtos/tokens.dto';
 import { IAuthService } from '../services/i.auth.service';
 
 export abstract class IAuthController {
@@ -12,11 +10,7 @@ export abstract class IAuthController {
     this.authService = authService;
   }
 
-  public abstract login(body: LoginBodyDto): Promise<AuthTokensResponseDto>;
-  public abstract refresh(body: RefreshBodyDTO): Promise<AuthTokensResponseDto>;
+  public abstract login(body: LoginBodyDTO): Promise<TokensResponseDTO>;
+  public abstract refresh(body: RefreshBodyDTO): Promise<TokensResponseDTO>;
   public abstract logout(body: RefreshBodyDTO): Promise<void>;
-  public abstract requestPasswordReset(
-    body: RequestPasswordResetBodyDTO,
-  ): Promise<void>;
-  public abstract resetPassword(body: ResetPasswordBodyDTO): Promise<void>;
 }

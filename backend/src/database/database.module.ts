@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { IDatabaseService } from './services/i.database.service';
-import { DatabaseService } from './services/implementations/database.service';
+import { IDatabaseClient } from './clients/i.database.client';
+import { DatabaseClient } from './clients/implementations/database.client';
 
 @Module({
-  exports: [IDatabaseService],
+  exports: [IDatabaseClient],
   providers: [
     {
-      provide: IDatabaseService,
-      useClass: DatabaseService,
+      provide: IDatabaseClient,
+      useClass: DatabaseClient,
     },
   ],
 })

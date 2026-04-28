@@ -1,7 +1,7 @@
-import { AuthTokensResponse } from '@base-saas/shared';
+import { TokensResponse } from '@base-saas/shared';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class AuthTokensResponseDTO implements AuthTokensResponse {
+export class TokensResponseDTO implements TokensResponse {
   @IsNotEmpty()
   @IsString()
   public accessToken: string;
