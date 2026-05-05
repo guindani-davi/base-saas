@@ -1,18 +1,16 @@
 import { User } from '@base-saas/shared';
 import { Inject, Injectable } from '@nestjs/common';
-import { EntityAlreadyExistsException } from '../../../common/exceptions/entity-already-exists.exception';
-import { EntityNotFoundException } from '../../../common/exceptions/entity-not-found.exception';
 import { IDatabaseClient } from '../../../database/clients/i.database.client';
 import { PostgresErrorCode } from '../../../database/enums/postgres-error-code.enum';
 import { DatabaseException } from '../../../database/exceptions/database.exception';
 import { Database } from '../../../database/types';
 import { IHelpersService } from '../../../helpers/services/i.helpers.service';
-import { CreateBodyDTO } from '../../../users/dtos/create.dto';
+import { CreateBodyDTO } from '../../../users/dtos/create/create.dto';
 import {
   GetByEmailParamsDTO,
   GetByIdParamsDTO,
-} from '../../../users/dtos/get.dto';
-import { UpdateBodyDTO, UpdateParamsDTO } from '../../../users/dtos/update.dto';
+} from '../../../users/dtos/get/get.dto';
+import { UpdateBodyDTO, UpdateParamsDTO } from '../../dtos/update/update.dto';
 import { IUsersRepository } from '../i.users.repository';
 
 @Injectable()
@@ -24,7 +22,7 @@ export class UsersRepository extends IUsersRepository {
     super(databaseClient, helpersService);
   }
 
-  public async create(body: CreateBodyDTO): Promise<User> {
+  public async create(body: CreateBodyDTO): Promise<User | null> {
     const data: Database['public']['Tables']['users']['Insert'] = {
       id: this.helpersService.generateUUID(),
       email: body.email,
@@ -32,7 +30,7 @@ export class UsersRepository extends IUsersRepository {
       name: body.name,
       surname: body.surname,
       is_active: true,
-      created_at: this.helpersService.getCurrentTimestampWithoutTZ(),
+      created_at: this.helpersService.getCurrentTimestamp(),
       updated_at: null,
     };
 
@@ -44,7 +42,7 @@ export class UsersRepository extends IUsersRepository {
 
     if (result.error) {
       if (result.error.code === PostgresErrorCode.UNIQUE_VIOLATION) {
-        throw new EntityAlreadyExistsException('User');
+        return null;
       }
       throw new DatabaseException();
     }
@@ -52,7 +50,7 @@ export class UsersRepository extends IUsersRepository {
     return this.mapToEntity(result.data);
   }
 
-  public async getById(params: GetByIdParamsDTO): Promise<User> {
+  public async getById(params: GetByIdParamsDTO): Promise<User | null> {
     const result = await this.databaseClient
       .from('users')
       .select()
@@ -60,13 +58,13 @@ export class UsersRepository extends IUsersRepository {
       .single();
 
     if (!result.data) {
-      throw new EntityNotFoundException('User');
+      return null;
     }
 
     return this.mapToEntity(result.data);
   }
 
-  public async getByEmail(params: GetByEmailParamsDTO): Promise<User> {
+  public async getByEmail(params: GetByEmailParamsDTO): Promise<User | null> {
     const result = await this.databaseClient
       .from('users')
       .select()
@@ -74,7 +72,7 @@ export class UsersRepository extends IUsersRepository {
       .single();
 
     if (!result.data) {
-      throw new EntityNotFoundException('User');
+      return null;
     }
 
     return this.mapToEntity(result.data);
@@ -86,7 +84,7 @@ export class UsersRepository extends IUsersRepository {
   ): Promise<void> {
     const data: Database['public']['Tables']['users']['Update'] = {
       ...body,
-      updated_at: this.helpersService.getCurrentTimestampWithoutTZ(),
+      updated_at: this.helpersService.getCurrentTimestamp(),
     };
 
     const result = await this.databaseClient
@@ -99,11 +97,32 @@ export class UsersRepository extends IUsersRepository {
     }
   }
 
+  public async updatePasswordById(
+    userId: User['id'],
+    newPassword: User['hashedPassword'],
+  ): Promise<void> {
+    const data: Database['public']['Tables']['users']['Update'] = {
+      hashed_password: newPassword,
+      updated_at: this.helpersService.getCurrentTimestamp(),
+    };
+
+    const result = await this.databaseClient
+      .from('users')
+      .update(data)
+      .eq('id', userId);
+
+    if (result.error) {
+      throw new DatabaseException();
+    }
+  }
+
   private mapToEntity(
     data: Database['public']['Tables']['users']['Row'],
   ): User {
-    const { createdAtDate, updatedAtDate } =
-      this.helpersService.parseEntitiesDates(data.created_at, data.updated_at);
+    const createdAt = this.helpersService.parseDate(data.created_at);
+    const updatedAt = data.updated_at
+      ? this.helpersService.parseDate(data.updated_at)
+      : null;
 
     return new User(
       data.id,
@@ -111,8 +130,8 @@ export class UsersRepository extends IUsersRepository {
       data.name,
       data.surname,
       data.hashed_password,
-      createdAtDate,
-      updatedAtDate,
+      createdAt,
+      updatedAt,
     );
   }
 }

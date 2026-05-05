@@ -13,18 +13,12 @@ export class HelpersService extends IHelpersService {
     this.configService = configService;
   }
 
-  public parseEntitiesDates(
-    createdAt: string,
-    updatedAt: string | null,
-  ): { createdAtDate: Date; updatedAtDate: Date | null } {
-    const createdAtDate = this.parseDate(createdAt);
-    const updatedAtDate = updatedAt ? this.parseDate(updatedAt) : null;
-
-    return { createdAtDate, updatedAtDate };
+  public parseDate(date: string): Date {
+    return new Date(date);
   }
 
-  public getCurrentTimestampWithoutTZ(): string {
-    return this.removeTimestampTZ(new Date());
+  public getCurrentTimestamp(): string {
+    return new Date().toISOString();
   }
 
   public generateUUID(): string {
@@ -36,11 +30,7 @@ export class HelpersService extends IHelpersService {
     return nodeEnv === Environment.PRODUCTION;
   }
 
-  public removeTimestampTZ(date: Date): string {
-    return date.toISOString().slice(0, -1);
-  }
-
-  private parseDate(date: string): Date {
-    return new Date(date);
+  public formatTimestamp(date: Date): string {
+    return date.toISOString();
   }
 }

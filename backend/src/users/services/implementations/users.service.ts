@@ -2,10 +2,12 @@ import { SafeUser, User } from '@base-saas/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import { EntityAlreadyExistsException } from '../../../common/exceptions/domain/implementations/entity-already-exists/entity-already-exists.exception';
+import { EntityNotFoundException } from '../../../common/exceptions/domain/implementations/entity-not-found/entity-not-found.exception';
 import { IHelpersService } from '../../../helpers/services/i.helpers.service';
-import { CreateBodyDTO } from '../../dtos/create.dto';
-import { GetByEmailParamsDTO, GetByIdParamsDTO } from '../../dtos/get.dto';
-import { UpdateBodyDTO, UpdateParamsDTO } from '../../dtos/update.dto';
+import { CreateBodyDTO } from '../../dtos/create/create.dto';
+import { GetByEmailParamsDTO, GetByIdParamsDTO } from '../../dtos/get/get.dto';
+import { UpdateBodyDTO, UpdateParamsDTO } from '../../dtos/update/update.dto';
 import { IUsersRepository } from '../../repositories/i.users.repository';
 import { IUsersService } from '../i.users.service';
 
@@ -31,16 +33,31 @@ export class UsersService extends IUsersService {
 
     const user = await this.usersRepository.create(body);
 
+    if (!user) {
+      throw new EntityAlreadyExistsException('User');
+    }
+
     return new SafeUser(user);
   }
 
   public async getSafeById(params: GetByIdParamsDTO): Promise<SafeUser> {
     const user = await this.usersRepository.getById(params);
+
+    if (!user) {
+      throw new EntityNotFoundException('User');
+    }
+
     return new SafeUser(user);
   }
 
   public async getByEmail(params: GetByEmailParamsDTO): Promise<User> {
-    return await this.usersRepository.getByEmail(params);
+    const user = await this.usersRepository.getByEmail(params);
+
+    if (!user) {
+      throw new EntityNotFoundException('User');
+    }
+
+    return user;
   }
 
   public async updateById(
@@ -51,11 +68,19 @@ export class UsersService extends IUsersService {
   }
 
   public async comparePasswords(
-    plainPassword: string,
-    hashedPassword: string,
+    plainPassword: User['hashedPassword'],
+    hashedPassword: User['hashedPassword'],
   ): Promise<boolean> {
     const pepperedPassword = this.pepperPassword(plainPassword);
     return bcrypt.compare(pepperedPassword, hashedPassword);
+  }
+
+  public async updatePasswordById(
+    userId: User['id'],
+    newPassword: User['hashedPassword'],
+  ): Promise<void> {
+    const hashedPassword = await this.hashPassword(newPassword);
+    await this.usersRepository.updatePasswordById(userId, hashedPassword);
   }
 
   private async hashPassword(password: string): Promise<string> {

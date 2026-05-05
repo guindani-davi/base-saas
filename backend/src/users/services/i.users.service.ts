@@ -1,9 +1,9 @@
 import { SafeUser, User } from '@base-saas/shared';
 import { Injectable } from '@nestjs/common';
 import { IHelpersService } from '../../helpers/services/i.helpers.service';
-import { CreateBodyDTO } from '../dtos/create.dto';
-import { GetByEmailParamsDTO, GetByIdParamsDTO } from '../dtos/get.dto';
-import { UpdateBodyDTO, UpdateParamsDTO } from '../dtos/update.dto';
+import { CreateBodyDTO } from '../dtos/create/create.dto';
+import { GetByEmailParamsDTO, GetByIdParamsDTO } from '../dtos/get/get.dto';
+import { UpdateBodyDTO, UpdateParamsDTO } from '../dtos/update/update.dto';
 import { IUsersRepository } from '../repositories/i.users.repository';
 
 @Injectable()
@@ -27,7 +27,11 @@ export abstract class IUsersService {
     body: UpdateBodyDTO,
   ): Promise<void>;
   public abstract comparePasswords(
-    plainPassword: string,
-    hashedPassword: string,
+    plainPassword: User['hashedPassword'],
+    hashedPassword: User['hashedPassword'],
   ): Promise<boolean>;
+  public abstract updatePasswordById(
+    userId: User['id'],
+    newPassword: User['hashedPassword'],
+  ): Promise<void>;
 }

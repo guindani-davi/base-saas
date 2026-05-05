@@ -1,4 +1,6 @@
+import { User } from "../../users";
+
 export interface LoginBody {
-  email: string;
-  password: string;
+  email: User["email"];
+  password: User["hashedPassword"];
 }

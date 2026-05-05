@@ -6,8 +6,8 @@
     "name" text not null,
     "surname" text not null,
     "is_active" boolean not null,
-    "created_at" timestamp without time zone not null,
-    "updated_at" timestamp without time zone
+    "created_at" timestamp with time zone not null,
+    "updated_at" timestamp with time zone
       );
 
 

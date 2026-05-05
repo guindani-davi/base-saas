@@ -1,7 +1,7 @@
+import type { JwtPayload } from '@base-saas/shared';
 import { SafeUser } from '@base-saas/shared';
-import type { JwtPayload } from '../../auth/models/jwt.model';
-import { CreateBodyDTO } from '../dtos/create.dto';
-import { UpdateBodyDTO } from '../dtos/update.dto';
+import { CreateBodyDTO } from '../dtos/create/create.dto';
+import { UpdateBodyDTO } from '../dtos/update/update.dto';
 import { IUsersService } from '../services/i.users.service';
 
 export abstract class IUsersController {

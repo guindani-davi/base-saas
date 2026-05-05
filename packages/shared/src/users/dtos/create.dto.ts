@@ -1,6 +1,8 @@
+import { User } from "../models/user.model";
+
 export interface CreateBody {
-  email: string;
-  password: string;
-  name: string;
-  surname: string;
+  email: User["email"];
+  password: User["hashedPassword"];
+  name: User["name"];
+  surname: User["surname"];
 }

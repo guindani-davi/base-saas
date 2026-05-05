@@ -1,12 +1,12 @@
 import { User } from "./user.model";
 
 export class SafeUser implements Omit<User, "hashedPassword"> {
-  public readonly id: string;
-  public readonly email: string;
-  public readonly name: string;
-  public readonly surname: string;
-  public readonly createdAt: Date;
-  public readonly updatedAt: Date | null;
+  public readonly id: User["id"];
+  public readonly email: User["email"];
+  public readonly name: User["name"];
+  public readonly surname: User["surname"];
+  public readonly createdAt: User["createdAt"];
+  public readonly updatedAt: User["updatedAt"];
 
   public constructor(user: User) {
     this.id = user.id;

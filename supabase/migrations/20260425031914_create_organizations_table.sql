@@ -7,8 +7,8 @@
     "is_active" boolean not null,
     "created_by" uuid not null,
     "updated_by" uuid,
-    "created_at" timestamp without time zone not null,
-    "updated_at" timestamp without time zone
+    "created_at" timestamp with time zone not null,
+    "updated_at" timestamp with time zone
       );
 
 

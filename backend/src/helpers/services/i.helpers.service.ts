@@ -4,12 +4,9 @@ import { Injectable } from '@nestjs/common';
 export abstract class IHelpersService {
   public constructor() {}
 
-  public abstract parseEntitiesDates(
-    createdAt: string,
-    updatedAt: string | null,
-  ): { createdAtDate: Date; updatedAtDate: Date | null };
-  public abstract getCurrentTimestampWithoutTZ(): string;
+  public abstract parseDate(date: string): Date;
+  public abstract getCurrentTimestamp(): string;
   public abstract generateUUID(): string;
   public abstract isProduction(): boolean;
-  public abstract removeTimestampTZ(date: Date): string;
+  public abstract formatTimestamp(date: Date): string;
 }

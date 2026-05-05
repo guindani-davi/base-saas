@@ -1,11 +1,21 @@
+import type { JwtPayload } from '@base-saas/shared';
 import { SafeUser } from '@base-saas/shared';
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Inject,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ExtractJwtPayload } from '../../../auth/decorators/jwt-payload/jwt-payload.decorator';
 import { Public } from '../../../auth/decorators/public/public.decorator';
-import type { JwtPayload } from '../../../auth/models/jwt.model';
-import { CreateBodyDTO } from '../../../users/dtos/create.dto';
-import { UpdateBodyDTO } from '../../../users/dtos/update.dto';
-import { IUsersService } from '../../../users/services/i.users.service';
+import { CreateBodyDTO } from '../../dtos/create/create.dto';
+import { GetByIdParamsDTO } from '../../dtos/get/get.dto';
+import { UpdateBodyDTO } from '../../dtos/update/update.dto';
+import { IUsersService } from '../../services/i.users.service';
 import { IUsersController } from '../i.user.controller';
 
 @Controller('users')
@@ -20,13 +30,19 @@ export class UsersController extends IUsersController {
     return await this.userService.create(body);
   }
 
-  public async getById(
-    @ExtractJwtPayload() payload: JwtPayload,
-  ): Promise<SafeUser> {
-    return await this.userService.getById(payload);
+  @Get('me')
+  public getMe(@ExtractJwtPayload() user: JwtPayload): Promise<SafeUser> {
+    const dto: GetByIdParamsDTO = { id: user.sub };
+    return this.userService.getSafeById(dto);
   }
 
-  public updateMe(user: JwtPayload, body: UpdateBodyDTO): Promise<void> {
-    throw new Error('Method not implemented.');
+  @Patch('me')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async updateMe(
+    @ExtractJwtPayload() user: JwtPayload,
+    @Body() body: UpdateBodyDTO,
+  ): Promise<void> {
+    const dto: GetByIdParamsDTO = { id: user.sub };
+    await this.userService.updateById(dto, body);
   }
 }

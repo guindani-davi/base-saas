@@ -1,3 +1,5 @@
+import { RefreshToken } from "../models/tokens/refresh.model";
+
 export interface RefreshBody {
-  refreshToken: string;
+  refreshToken: RefreshToken["hashedToken"];
 }

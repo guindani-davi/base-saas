@@ -1,3 +1,4 @@
+import { DomainExceptionCode } from '@base-saas/shared';
 import {
   type ArgumentsHost,
   Catch,
@@ -7,14 +8,16 @@ import {
   Logger,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { DomainExceptionCode } from '../enums/domain-exception-code.enum';
-import { DomainException } from '../exceptions/domain.exception';
+import { DomainException } from '../exceptions/domain/domain.exception';
 import { ApiErrorResponse } from '../models/api-error.model';
 
 const ERROR_MESSAGES: Record<string, string> = {
   'errors.databaseError': 'An unexpected database error occurred',
   'errors.entityNotFound': '{entity} was not found',
   'errors.entityAlreadyExists': '{entity} already exists',
+  'errors.invalidCredentials': 'Invalid email or password',
+  'errors.invalidRefreshToken': 'Invalid or expired refresh token',
+  'errors.authInvalidToken': 'Authentication token is invalid or expired',
 };
 
 const ENTITY_NAMES: Record<string, string> = {
@@ -36,6 +39,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     [DomainExceptionCode.ENTITY_NOT_FOUND, HttpStatus.NOT_FOUND],
     [DomainExceptionCode.ENTITY_ALREADY_EXISTS, HttpStatus.CONFLICT],
     [DomainExceptionCode.DATABASE_ERROR, HttpStatus.INTERNAL_SERVER_ERROR],
+    [DomainExceptionCode.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED],
+    [DomainExceptionCode.INVALID_REFRESH_TOKEN, HttpStatus.UNAUTHORIZED],
   ]);
 
   public catch(exception: unknown, host: ArgumentsHost): void {

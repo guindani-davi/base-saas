@@ -1,7 +1,9 @@
+import { User } from "../..";
+
 export interface GetByIdParams {
-  id: string;
+  id: User["id"];
 }
 
 export interface GetByEmailParams {
-  email: string;
+  email: User["email"];
 }

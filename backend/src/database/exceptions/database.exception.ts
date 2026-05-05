@@ -1,5 +1,5 @@
-import { DomainExceptionCode } from '../../common/enums/domain-exception-code.enum';
-import { DomainException } from '../../common/exceptions/domain.exception';
+import { DomainExceptionCode } from '@base-saas/shared';
+import { DomainException } from '../../common/exceptions/domain/domain.exception';
 
 export class DatabaseException extends DomainException {
   public constructor() {

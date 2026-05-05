@@ -153,25 +153,25 @@ export type Database = {
       password_reset_tokens: {
         Row: {
           created_at: string
-          expires_at: string | null
+          expires_at: string
+          hashed_token: string
           id: string
-          token_hash: string
           used_at: string | null
           user_id: string
         }
         Insert: {
           created_at: string
-          expires_at?: string | null
+          expires_at: string
+          hashed_token: string
           id: string
-          token_hash: string
           used_at?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
-          expires_at?: string | null
+          expires_at?: string
+          hashed_token?: string
           id?: string
-          token_hash?: string
           used_at?: string | null
           user_id?: string
         }
@@ -185,34 +185,34 @@ export type Database = {
           },
         ]
       }
-      referesh_tokens: {
+      refresh_tokens: {
         Row: {
           created_at: string
           expires_at: string
+          hashed_token: string
           id: string
           revoked_at: string | null
-          token_hash: string
           user_id: string
         }
         Insert: {
           created_at: string
           expires_at: string
+          hashed_token: string
           id: string
           revoked_at?: string | null
-          token_hash: string
           user_id: string
         }
         Update: {
           created_at?: string
           expires_at?: string
+          hashed_token?: string
           id?: string
           revoked_at?: string | null
-          token_hash?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "referesh_tokens_user_id_fkey"
+            foreignKeyName: "refresh_tokens_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"

@@ -1,10 +1,10 @@
+import { User } from "../models/user.model";
+
 export interface UpdateParams {
-  id: string;
+  id: User["id"];
 }
 
 export interface UpdateBody {
-  name?: string;
-  surname?: string;
-  password?: string;
-  currentPassword?: string;
+  name?: User["name"];
+  surname?: User["surname"];
 }
